@@ -60,8 +60,9 @@
       </el-popover>
     </el-row>
     <el-row id="input">
-      <div>
-        <img src="~@/assets/1057.png" alt="" />
+      <div style="display: flex;justify-content: center; align-items: center;">
+        <img style="width: 100px;height: 100px;" src="~@/assets/logo.jpg" alt="">
+        <img style="width: 500px;height: 100px;" src="~@/assets/logo2.png" alt="" />
       </div>
       <el-autocomplete v-model="search_word" style="width: 600px;"
                        :fetch-suggestions="querySearchAsync" @select="handleSelect"

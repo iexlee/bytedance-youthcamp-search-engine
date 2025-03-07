@@ -2,81 +2,53 @@
   <el-container style="width: 100%">
     <el-header height="20%">
       <el-row style="height: 200px; width: 100%; display: flex">
-        <el-col style="width: 100px; margin-right: 10px">
-          <div>
-            <a href="/"><img src="~@/assets/1057inRes.png" alt="" /></a>
+        <el-col style="width: 40px; margin-right: 10px">
+          <div style="display: flex;justify-content: center; align-items: center;">
+            <a style="    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;" href="">
+              <img style="height: 50px;" src="~@/assets/logo.jpg" alt="">
+            </a>
           </div>
+          <!-- <div>
+            <a href="/"><img src="~@/assets/1057inRes.png" alt="" /></a>
+          </div> -->
         </el-col>
         <el-col>
           <div class="input" style="text-align: left">
-            <el-autocomplete v-model="search_word" style="width: 600px;"
-                             :fetch-suggestions="querySearchAsync" @select="handleSelect"
-                             placeholder="请输入搜索内容" prefix-icon="el-icon-search"
-                             @keyup.enter.native="search">
+            <el-autocomplete v-model="search_word" style="width: 600px;" :fetch-suggestions="querySearchAsync"
+              @select="handleSelect" placeholder="请输入搜索内容" prefix-icon="el-icon-search" @keyup.enter.native="search">
               <template v-slot:suffix>
-                <el-upload
-                    :limit="1"
-                    action="http://localhost:9090/imageUpload"
-                    :show-file-list="false"
-                    :on-success="handleAvatarSuccess"
-                    :before-upload="beforeAvatarUpload"
-                    style="float: left; padding-top: 5px; max-width: 37px"
-                >
+                <el-upload :limit="1" action="http://localhost:9090/imageUpload" :show-file-list="false"
+                  :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload"
+                  style="float: left; padding-top: 5px; max-width: 37px">
                   <i class="el-input__icon el-icon-camera"></i>
                 </el-upload>
-                <el-button
-                    style="margin-right: 10px; margin-top: 5px"
-                    slot="suffix"
-                    type="text"
-                    @click="searcher"
-                >搜索</el-button
-                >
+                <el-button style="margin-right: 10px; margin-top: 5px" slot="suffix" type="text"
+                  @click="searcher">搜索</el-button>
               </template>
             </el-autocomplete>
           </div>
         </el-col>
         <div>
           <el-col style="display: flex; float: right;">
-            <el-popover
-              placement="left-start"
-              title="收藏夹"
-              width="300"
-              trigger="click"
-              content="将来放收藏夹相关内容，实现效果可以参考edge的收藏夹。"
-            >
-              <el-button
-                slot="reference"
-                icon="el-icon-folder"
-                circle
-              ></el-button>
+            <el-popover placement="left-start" title="收藏夹" width="300" trigger="click"
+              content="将来放收藏夹相关内容，实现效果可以参考edge的收藏夹。">
+              <el-button slot="reference" icon="el-icon-folder" circle></el-button>
               <div v-if="check">
-                <favorites
-                  :username="user.username"
-                  :addToFavorite="0"
-                  :key="timer"
-                  ref="favorites"
-                ></favorites>
+                <favorites :username="user.username" :addToFavorite="0" :key="timer" ref="favorites"></favorites>
               </div>
               <div v-if="!check">
-                <a
-                  style="
+                <a style="
                     color: #55ab41;
                     margin-right: 148px;
                     text-decoration: none;
-                  "
-                  href="/login"
-                  >对不起,请前往登录</a
-                >
+                  " href="/login">对不起,请前往登录</a>
               </div>
             </el-popover>
             <span>&nbsp;&nbsp;</span>
-            <el-popover
-              placement="bottom"
-              title="个人信息"
-              width="300"
-              trigger="click"
-              content="将来放关于用户的信息。"
-            >
+            <el-popover placement="bottom" title="个人信息" width="300" trigger="click" content="将来放关于用户的信息。">
               <el-button slot="reference" icon="el-icon-user" circle>
               </el-button>
               <!--用户信息 -->
@@ -87,20 +59,12 @@
                 <span id="logout" @click="logout">注销</span>
               </div>
               <div v-if="!check">
-                <a
-                  style="
+                <a style="
                     color: #55ab41;
                     margin-right: 148px;
                     text-decoration: none;
-                  "
-                  href="/login"
-                  >对不起,请前往登录</a
-                >
-                <a
-                  style="color: #55ab41; text-decoration: none"
-                  href="/register"
-                  >注册</a
-                >
+                  " href="/login">对不起,请前往登录</a>
+                <a style="color: #55ab41; text-decoration: none" href="/register">注册</a>
               </div>
             </el-popover>
           </el-col>
@@ -109,39 +73,23 @@
     </el-header>
 
     <el-main>
-      <el-col
-        v-loading="loading"
-        element-loading-text="拼命加载中"
-        element-loading-spinner="el-icon-loading"
-        element-loading-background="rgb(255 255 255)"
-      >
+      <el-col v-loading="loading" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading"
+        element-loading-background="rgb(255 255 255)">
         <div style="display: flex">
           <el-col :span="2" id="gen">
             <span>&nbsp;</span>
           </el-col>
-          <div
-            style="margin-right: 15px"
-            id="text"
-            :class="{ selectedOne: picture_text === 1 }"
-            @click="tranfer1('text')"
-          >
+          <div style="margin-right: 15px" id="text" :class="{ selectedOne: picture_text === 1 }"
+            @click="tranfer1('text')">
             文本
           </div>
-          <div
-            id="picture"
-            :class="{ selectedOne: picture_text === 2 }"
-            @click="tranfer1('picture')"
-          >
+          <div id="picture" :class="{ selectedOne: picture_text === 2 }" @click="tranfer1('picture')">
             图片
           </div>
-          <div
-            id="picture"
-            :class="{
-              selectedOne: picture_text === 3,
-              picToPic: picTopic1 === false,
-            }"
-            @click="tranfer1('picToPic')"
-          >
+          <div id="picture" :class="{
+            selectedOne: picture_text === 3,
+            picToPic: picTopic1 === false,
+          }" @click="tranfer1('picToPic')">
             搜图
           </div>
         </div>
@@ -154,27 +102,15 @@
           <el-col :span="11" v-if="picture_text == 1">
             <dl>
               <div v-if="recordsNum != 0">
-                <div
-                  v-for="item in imgAndCaption"
-                  align="left"
-                  style="
+                <div v-for="item in imgAndCaption" align="left" style="
                     display: flex;
                     margin-bottom: 15px;
                     align-items: center;
-                  "
-                >
+                  ">
                   <!-- 收藏按钮 -->
-                  <el-button
-                    @click="addToFavorite(item)"
-                    style="margin-right: 10px;"
-                    icon="el-icon-star-off" circle
-                    ></el-button
-                  >
-                  <a
-                    :href="item.url"
-                    target="_blank"
-                    style="white-space: nowrap; word-break: break-all"
-                  >
+                  <el-button @click="addToFavorite(item)" style="margin-right: 10px;" icon="el-icon-star-off"
+                    circle></el-button>
+                  <a :href="item.url" target="_blank" style="white-space: nowrap; word-break: break-all">
                     <h3 v-html="lightFn(item.caption, search_word_not_contain_filter)"></h3>
                   </a>
                 </div>
@@ -185,8 +121,7 @@
                     <h1>
                       抱歉没有找到与<span style="color: #55ab41">{{
                         search_word
-                      }}</span
-                      >相关的文本。
+                      }}</span>相关的文本。
                     </h1>
                   </div>
                 </div>
@@ -197,32 +132,22 @@
 
           <el-col style="max-width: 1200px" v-if="picture_text == 2">
             <dl>
-              <div
-                v-if="recordsNum != 0"
-                style="
+              <div v-if="recordsNum != 0" style="
                   display: flex;
                   flex-wrap: wrap;
                   justify-content: flex-start;
-                "
-              >
+                ">
                 <div v-for="item in imgAndCaption" align="left" class="P_item">
                   <div>
-                    <img
-                      style="height: 200px; border-radius: 10%"
-                      :src="item.url"
-                      :alt="item.caption"
-                    />
-                    <p
-                      style="
+                    <img style="height: 200px; border-radius: 10%" :src="item.url" :alt="item.caption" />
+                    <p style="
                         font-size: 10px;
                         overflow: hidden;
                         word-break: keep-all;
                         white-space: nowrap;
                         text-overflow: ellipsis;
-                      "
-                      :style="'width:' + item.width"
-                      v-html="lightFn(item.caption, search_word_not_contain_filter)"
-                    ></p>
+                      " :style="'width:' + item.width" v-html="lightFn(item.caption, search_word_not_contain_filter)">
+                    </p>
                   </div>
                 </div>
               </div>
@@ -232,8 +157,7 @@
                     <h1>
                       抱歉没有找到与<span style="color: #55ab41">{{
                         search_word
-                      }}</span
-                      >相关的图片。
+                      }}</span>相关的图片。
                     </h1>
                   </div>
                 </div>
@@ -243,23 +167,18 @@
 
           <el-col :span="11" v-if="picture_text == 3">
             <dl>
-              <div
-                style="
+              <div style="
                   display: flex;
                   flex-wrap: wrap;
                   justify-content: flex-start;
                   min-width: 850px;
-                "
-              >
+                ">
                 <div v-for="item in imgAndCaption1" align="left">
-                  <img
-                    style="
+                  <img style="
                       height: 200px;
                       margin-right: 15px;
                       border-radius: 10%;
-                    "
-                    :src="item.url"
-                  />
+                    " :src="item.url" />
                 </div>
               </div>
             </dl>
@@ -271,11 +190,7 @@
             相关搜索
           </h3>
           <div id="allrelated">
-            <div
-              class="related"
-              v-for="rw in relatedWord"
-              @click="searchRelated({ rw })"
-            >
+            <div class="related" v-for="rw in relatedWord" @click="searchRelated({ rw })">
               {{ rw }}
             </div>
           </div>
@@ -286,14 +201,8 @@
           </el-col>
           <el-col :span="11">
             <div align="left">
-              <el-pagination
-                background
-                @current-change="handleCurrentChange"
-                :current-page="pageNum"
-                :page-size="15"
-                layout="prev, pager, next, jumper"
-                :total="recordsNum"
-              >
+              <el-pagination background @current-change="handleCurrentChange" :current-page="pageNum" :page-size="15"
+                layout="prev, pager, next, jumper" :total="recordsNum">
               </el-pagination>
             </div>
           </el-col>
@@ -304,24 +213,10 @@
 
     <div v-if="check">
       <div v-show="false">
-        <favorites
-            :username="user.username"
-            :addToFavorite="1"
-            ref="favorites"
-            @notShowDialog="change"
-        ></favorites>
+        <favorites :username="user.username" :addToFavorite="1" ref="favorites" @notShowDialog="change"></favorites>
       </div>
-      <el-dialog
-        title="请选择添加位置"
-        :visible.sync="addToFavoritedialogVisible"
-        width="20%"
-      >
-        <favorites
-          :username="user.username"
-          :addToFavorite="1"
-          ref="favorites"
-          @notShowDialog="change"
-        ></favorites>
+      <el-dialog title="请选择添加位置" :visible.sync="addToFavoritedialogVisible" width="20%">
+        <favorites :username="user.username" :addToFavorite="1" ref="favorites" @notShowDialog="change"></favorites>
         <span>
           <br />
         </span>
@@ -387,7 +282,7 @@ export default {
     addToFavorite(item) {
       if (localStorage.getItem("access") == null) {
         this.$message.error("请先登录");
-      }else{
+      } else {
         var url = item.url;
         var caption = item.caption;
         this.$refs.favorites.addFavorite(url, caption);
@@ -417,9 +312,9 @@ export default {
         await axios
           .get(
             "http://localhost:9090/survival?token=" +
-              jwt.token +
-              "&username=" +
-              jwt.username
+            jwt.token +
+            "&username=" +
+            jwt.username
           )
           .then((response) => {
             if (response.data.message != "success") {
@@ -435,9 +330,9 @@ export default {
         await axios
           .get(
             "http://localhost:9090/user/logout?username=" +
-              jwt.username +
-              "&token=" +
-              jwt.token
+            jwt.username +
+            "&token=" +
+            jwt.token
           )
           .then(function (response) {
             if (response.data.message == "success") {
@@ -452,7 +347,7 @@ export default {
               }, 3000);
             }
           });
-      }else{
+      } else {
         location.reload();
       }
     },
@@ -518,7 +413,7 @@ export default {
       this.search_word_not_contain_filter = this.search_word
       var filter = /^-.*?$/
       var strs = this.search_word_not_contain_filter.trim().split(/\s+/)
-      var idx =  -1;
+      var idx = -1;
       for (let i = 0; i < strs.length; i++) {
         if (filter.test(strs[i])) {
           idx = this.search_word_not_contain_filter.indexOf(strs[i])
@@ -527,15 +422,15 @@ export default {
       }
       if (idx != -1) {
         this.search_word_not_contain_filter = this.search_word_not_contain_filter
-            .substring(0, idx).replace(/(^\s*)|(\s*$)/g, "")
+          .substring(0, idx).replace(/(^\s*)|(\s*$)/g, "")
       }
 
       await axios
         .get(
           "http://localhost:9090/search_use_split?word=" +
-            outer.search_word +
-            "&pageNum=" +
-            outer.pageNum
+          outer.search_word +
+          "&pageNum=" +
+          outer.pageNum
         )
         .then((response) => (outer.info = response.data));
       if (this.info != "") {
@@ -571,7 +466,7 @@ export default {
       this.search_word_not_contain_filter = this.search_word
       var filter = /^-.*?$/
       var strs = this.search_word_not_contain_filter.trim().split(/\s+/)
-      var idx =  -1;
+      var idx = -1;
       for (let i = 0; i < strs.length; i++) {
         if (filter.test(strs[i])) {
           idx = this.search_word_not_contain_filter.indexOf(strs[i])
@@ -580,15 +475,15 @@ export default {
       }
       if (idx != -1) {
         this.search_word_not_contain_filter = this.search_word_not_contain_filter
-            .substring(0, idx).replace(/(^\s*)|(\s*$)/g, "")
+          .substring(0, idx).replace(/(^\s*)|(\s*$)/g, "")
       }
 
       let outer = this;
       await axios
         .get(
           "http://localhost:9090/search_use_split?word=" +
-            this.search_word +
-            "&pageNum=1"
+          this.search_word +
+          "&pageNum=1"
         )
         .then((response) => (outer.info = response.data));
       if (this.info != "") {
@@ -613,9 +508,9 @@ export default {
       await axios
         .get(
           "http://localhost:9090/search_use_split?word=" +
-            this.search_word +
-            "&pageNum=" +
-            val
+          this.search_word +
+          "&pageNum=" +
+          val
         )
         .then((response) => (outer.info = response.data));
       this.imgAndCaption = [];
@@ -642,10 +537,10 @@ export default {
         cb(results);
       } else {
         await axios
-            .get("http://localhost:9090/prefix_word?word=" + this.search_word)
-            .then((response) => {
-              data = response.data
-            })
+          .get("http://localhost:9090/prefix_word?word=" + this.search_word)
+          .then((response) => {
+            data = response.data
+          })
         for (let i = 0; i < data.length; i++) {
           results.push({
             value: data[i]
@@ -668,13 +563,16 @@ export default {
 div {
   white-space: nowrap;
 }
+
 a {
   text-decoration: none;
   color: #55ab41;
 }
+
 .input .el-input__inner {
   height: 50px;
 }
+
 .el-header {
   /*background-color: #B3C0D1;*/
   display: flex;
@@ -682,6 +580,7 @@ a {
   width: 100%;
   height: 5px;
 }
+
 .el-main {
   /*background-color: #E9EEF3;*/
   margin-top: 0;
@@ -693,6 +592,7 @@ a {
   min-width: 1119px;
   /* overflow-y: scroll; */
 }
+
 #allrelated {
   margin-left: 100px;
   margin-bottom: 20px;
@@ -701,6 +601,7 @@ a {
   flex-direction: row;
   flex-wrap: wrap;
 }
+
 .related {
   width: 258px;
   text-align: left;
@@ -710,30 +611,37 @@ a {
   padding: 10px;
   margin: 5px;
 }
+
 #logout {
   cursor: pointer;
   float: right;
   text-decoration: none;
 }
+
 .selectedOne {
   border-bottom: 1px solid #55ab41;
 }
+
 .picToPic {
   display: none;
 }
+
 #text {
   width: 50px;
   height: 30px;
   cursor: pointer;
 }
+
 #picture {
   width: 50px;
   height: 30px;
   cursor: pointer;
 }
+
 .P_item {
   margin-right: 15px;
 }
+
 @media (max-width: 1372px) {
   #gen {
     display: none;
