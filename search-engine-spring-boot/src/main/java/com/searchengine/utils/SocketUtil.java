@@ -19,6 +19,7 @@ import com.alibaba.fastjson.JSON;
 public class SocketUtil {
     // 服务端IP地址
     public static final String HOST = "127.0.0.1";
+    //public static final String HOST = "10.112.20.180";
     // 服务端端口
     public static final int PORT = 50000;
 

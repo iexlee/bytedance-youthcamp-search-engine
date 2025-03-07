@@ -36,6 +36,10 @@
         SELECT * FROM segmentation WHERE word=#{word}
     </select>
 
+    <select id="selectListSeg" resultType="com.searchengine.entity.Segmentation" parameterType="java.lang.String">
+        SELECT * FROM segmentation WHERE word=#{word}
+    </select>
+
     <insert id="insertSeg" parameterType="java.lang.String">
         insert into segmentation (word)
         values (#{word})

@@ -158,19 +158,24 @@ public class addAllSeg {
     public void addSegs() {
         // List<Record> records = recordService.queryAllRecord();
         List<String> segs = new ArrayList<>();
+        //10000000
         BloomFilter<String> bf = BloomFilter.create(Funnels.stringFunnel(Charset.forName("UTF-8")),10000000);
         if (stopWordsSet == null) {
             stopWordsSet = new HashSet<>();
             loadStopWords(stopWordsSet, this.getClass().getResourceAsStream("/jieba/stop_words.txt"));
+            System.out.println(stopWordsSet);
         }
-        for (int loop = 0; loop < 300; loop++) {
-            List<Record> records = recordService.selectPartialRecords(10000, Math.max(0, loop * 10000));
-            if (loop % 10 == 0 && loop != 0) {  // 这里注意loop应该不等于起始值，不一定非是0，因为起始值会空的，先这样写着。
+        //300
+        for (int loop = 0; loop < 390; loop++) {
+            //10000
+            List<Record> records = recordService.selectPartialRecords(1000, Math.max(0, loop * 1000));
+            if ((loop % 10 == 0 || loop % 10 == 5)  && loop != 0) {  // 这里注意loop应该不等于起始值，不一定非是0，因为起始值会空的，先这样写着。
                 tDao.insert1(segs);
+                System.out.println("===="+loop);
                 segs.clear();
             }
-            for (int i = loop * 10000; i < (loop + 1) * 10000; i++) {
-                Record record = records.get(i % 10000);
+            for (int i = loop * 1000; i < (loop + 1) * 1000; i++) {
+                Record record = records.get(i % 1000);
                 String caption = record.getCaption();
                 List<SegToken> segTokens = jiebaSegmenter.process(caption, JiebaSegmenter.SegMode.INDEX);
                 for (SegToken segToken : segTokens) {
@@ -195,7 +200,7 @@ public class addAllSeg {
      */
     public void addAllSegUseSplit() {
         List<Segmentation> segmentations = segmentationService.queryAllSeg();
-        Map<String, Integer> wordToId = new HashMap<>(1000000);
+        Map<String, Integer> wordToId = new HashMap<>(1000000);  //分词到分词id的映射
         for (Segmentation seg : segmentations) {
             wordToId.put(seg.getWord(), seg.getId());
         }
@@ -205,10 +210,12 @@ public class addAllSeg {
         }
         Map<Integer, List<T>> mp = new HashMap<>(100000);
         int cnt = 0;
-        for (int loop = 0; loop < 300; loop++) {
-            List<Record> records = recordService.selectPartialRecords(10000, Math.max(0, loop * 10000));
-            for (int i = loop * 10000; i < (loop + 1) * 10000; i++) {
-                Record record = records.get(i % 10000);
+        for (int loop = 0; loop < 390; loop++) {
+            System.out.println("loop=====" + loop);
+            //10000
+            List<Record> records = recordService.selectPartialRecords(1000, Math.max(0, loop * 1000));
+            for (int i = loop * 1000; i < (loop + 1) * 1000; i++) {
+                Record record = records.get(i % 1000);
                 String caption = record.getCaption();
                 List<SegToken> segTokens = jiebaSegmenter.process(caption, JiebaSegmenter.SegMode.INDEX);
                 List<Keyword> keywords = tfidfAnalyzer.analyze(caption,5);
@@ -216,15 +223,16 @@ public class addAllSeg {
                 for (SegToken segToken : segTokens) {
                     String word = segToken.word;
                     if (stopWordsSet.contains(word)) continue;  // 判断是否是停用词
-                    int segId = wordToId.get(word);
-                    int dataId = record.getId();
-                    double tf = 0;
+                    int segId = wordToId.get(word);  //分词id
+                    int dataId = record.getId();    //该分词所在的记录的id
+                    double tf = 0;                  //分词与句子的关联度
                     for (Keyword v : keywords) {
                         if (v.getName().equals(word)) {
                             tf = v.getTfidfvalue();
                             break;
                         }
                     }
+                    //更新分词在某一caption中出现的次数
                     if (!countMap.containsKey(word)){
                         int count = 1;
                         countMap.put(word, new T(dataId, segId, tf, count));
@@ -237,14 +245,15 @@ public class addAllSeg {
                 }
                 for (T t : countMap.values()) {
                     int segId = t.getSegId();
-                    int idx = segId % 100;
+                    int idx = segId % 100;   //以分词id分表
                     List list = mp.getOrDefault(idx, new ArrayList<>(10000));
                     list.add(t);
                     mp.put(idx, list);
-                    cnt++;
+                    cnt++;   //
                 }
                 if (cnt > 100000) {  // 之所以这么搞，是因为在最后直接insert的话，会爆堆空间，虽然我已经开了4个G但好像还是不行。
                     cnt = 0;
+                    System.out.println("=====cnt=====");
                     for (Integer idx : mp.keySet()) {
                         String tableName = "data_seg_relation_" + idx;
                         tDao.createNewTable(tableName);

@@ -14,6 +14,9 @@ public interface SegmentationDao {
     int insertSeg(String word);
     //查询单个分词对应的id
     Segmentation selectOneSeg(String word);
+
+    List<Segmentation> selectListSeg(String word);
+
     //根据id查询
     Segmentation selectOneById(@Param("id") int id);
     //查询最大id

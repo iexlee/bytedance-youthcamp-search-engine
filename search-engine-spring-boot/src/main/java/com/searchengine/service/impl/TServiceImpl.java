@@ -6,6 +6,7 @@ import com.searchengine.dao.SegmentationDao;
 import com.searchengine.dao.TDao;
 import com.searchengine.dto.Record;
 import com.searchengine.entity.RecordSeg;
+import com.searchengine.entity.Segmentation;
 import com.searchengine.entity.T;
 import com.searchengine.service.TService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,17 +97,23 @@ public class TServiceImpl implements TService {
         List<SegToken> segTokens = segmenter.process(searchInfo, JiebaSegmenter.SegMode.SEARCH);
         boolean first = true;
         for (int i = 0; i < segTokens.size(); i++) {
-            if (segmentationDao.selectOneSeg(segTokens.get(i).word) == null) continue;
+//            if (segmentationDao.selectOneSeg(segTokens.get(i).word) == null) continue;
+//            if (segmentationDao.selectListSeg(segTokens.get(i).word) == null) continue;
             if ("".equals(segTokens.get(i).word.trim())) continue;
-            int segId = segmentationDao.selectOneSeg(segTokens.get(i).word).getId();
-            int idx = segId % 100;
-            if (first) {
-                sb.append("select * from data_seg_relation_").append(idx).append(" where seg_id = ").append(segId).append('\n');
-                first = false;
-            } else {
-                sb.append("union").append('\n');
-                sb.append("select * from data_seg_relation_").append(idx).append(" where seg_id = ").append(segId).append('\n');
+            List<Segmentation> segmentationList = segmentationDao.selectListSeg(segTokens.get(i).word);
+            for (Segmentation segmentation : segmentationList) {
+                int segId = segmentation.getId();
+                int idx = segId % 100;
+                if (first) {
+                    sb.append("select * from data_seg_relation_").append(idx).append(" where seg_id = ").append(segId).append('\n');
+                    first = false;
+                } else {
+                    sb.append("union").append('\n');
+                    sb.append("select * from data_seg_relation_").append(idx).append(" where seg_id = ").append(segId).append('\n');
+                }
             }
+//            int segId = segmentationDao.selectOneSeg(segTokens.get(i).word).getId();
+
         }
         String info = sb.toString();
         String filterInfo = "";
